@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión - MiZona{% endblock %}
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <h2><i class="fas fa-lock"></i> Panel de Control</h2>
+        <p>Ingresa para gestionar tu negocio</p>
+        <form action="{{ url_for('login') }}" method="POST">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Email o WhatsApp</label>
+                <input type="text" name="identifier" required placeholder="ej: +591700123456">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-key"></i> Contraseña</label>
+                <input type="password" name="password" required>
+            </div>
+            <button type="submit" class="btn-enter">
+                <i class="fas fa-sign-in-alt"></i> Entrar al Panel
+            </button>
+        </form>
+        <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted);">
+            ¿Nuevo emprendedor? <a href="{{ url_for('register') }}">Regístrate gratis</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

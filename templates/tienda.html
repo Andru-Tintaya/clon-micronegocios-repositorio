@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ store.name }} - MiZona{% endblock %}
+{% block content %}
+<div class="store-header">
+    <div class="container">
+        <div class="store-info">
+            <h1>{{ store.name }}</h1>
+            <p>{{ store.description }}</p>
+            <div class="store-contact">
+                <a href="https://wa.me/{{ store.whatsapp.replace('+','') }}" class="whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> {{ store.whatsapp }}
+                </a>
+                <span>📍 {{ store.city }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <h2>Productos Disponibles</h2>
+        <div class="products-grid" id="productsGrid">
+            {% for product in products %}
+            <div class="product-card" data-id="{{ product.id }}" data-price="{{ product.price }}">
+                <img src="{{ product.image_url or 'https://via.placeholder.com/320x200?text=Sin+Imagen' }}" 
+                     alt="{{ product.name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <div class="product-price">Bs {{ "%.2f"|format(product.price) }}</div>
+                    <p>{{ product.description or '' }}</p>
+                    {% if product.stock > 0 %}
+                    <div class="product-stock stock-ok">{{ product.stock }} disponibles</div>
+                    <button class="btn-add-cart" onclick="addToCart('{{ product.id }}', '{{ product.name }}', {{ product.price }})">
+                        🛒 Agregar al Carrito
+                    </button>
+                    {% else %}
+                    <div class="product-stock stock-out">Sin stock</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- CARRITO -->
+        <div class="cart-section" id="cartSection" style="display: none;">
+            <h3>🛒 Tu Pedido</h3>
+            <div id="cartItems"></div>
+            <div class="cart-total">
+                <strong>Total: <span id="cartTotal">Bs 0.00</span></strong>
+            </div>
+            <a href="#" id="whatsappBtn" class="btn-whatsapp" onclick="sendWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Enviar Pedido por WhatsApp
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+let cart = [];
+const storeId = '{{ store.id }}';
+
+function addToCart(productId, name, price) {
+    const existing = cart.find(item => item.id === productId);
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push({ id: productId, name, price, quantity: 1 });
+    }
+    updateCart();
+}
+
+function updateCart() {
+    const cartSection = document.getElementById('cartSection');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    
+    cartSection.style.display = cart.length ? 'block' : 'none';
+
+    if (cart.length) {
+        cartItems.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <span>${item.name} x${item.quantity}</span>
+                <span>Bs ${item.price * item.quantity}</span>
+            </div>
+        `).join('');
+        
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cartTotal.textContent = `Bs ${total.toFixed(2)}`;
+    }
+}
+
+function sendWhatsApp() {
+    const products = cart.map(item => item.id).join(',');
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    window.location.href = `/whatsapp-order/${storeId}?products=${products}&total=${total}`;
+}
+</script>
+{% endblock %}

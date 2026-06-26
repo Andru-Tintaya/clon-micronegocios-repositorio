@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Regístrate - MiZona{% endblock %}
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <h2>Únete Gratis</h2>
+        <p>Registra tu negocio y empieza a vender hoy</p>
+        <form method="POST">
+            <div class="form-group">
+                <label>Nombre Completo *</label>
+                <input type="text" name="full_name" required>
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>WhatsApp (con código) *</label>
+                <input type="tel" name="whatsapp" value="+591" placeholder="+59170000000" required>
+            </div>
+            <div class="form-group">
+                <label>Nombre del Negocio *</label>
+                <input type="text" name="business_name" required>
+            </div>
+            <div class="form-group">
+                <label>Ciudad *</label>
+                <select name="city" required>
+                    <option value="">Selecciona</option>
+                    <option value="Santa Cruz">Santa Cruz</option>
+                    <option value="La Paz">La Paz</option>
+                    <option value="Cochabamba">Cochabamba</option>
+                    <option value="El Alto">El Alto</option>
+                    <option value="Tarija">Tarija</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea name="description" rows="3" placeholder="Describe tu negocio..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Contraseña *</label>
+                <input type="password" name="password" required>
+            </div>
+            <button type="submit" class="btn-enter">Crear Cuenta Gratis</button>
+        </form>
+        <p style="text-align: center; margin-top: 1.5rem;">
+            ¿Ya tienes cuenta? <a href="/login">Inicia sesión</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

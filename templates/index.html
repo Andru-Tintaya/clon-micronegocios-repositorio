@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}MiZona - Marketplace Local{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1>Encuentra el <strong>mejor talento</strong> de tu ciudad</h1>
+        <p>Conectamos emprendedores locales con clientes que valoran calidad y confianza.</p>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Busca panadería, carpintería, mecánico...">
+            <button onclick="searchStores()"><i class="fas fa-search"></i> Buscar</button>
+        </div>
+        <div style="margin-top: 2rem; font-size: 1.1rem;">
+            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+            {{ stores|length if stores else 0 }} negocios activos
+        </div>
+    </div>
+</section>
+
+<section class="section" style="background: var(--bg-main);">
+    <div class="container">
+        <h2 class="section-title">Negocios Populares</h2>
+        <div class="business-grid" id="businessGrid">
+            {% if stores %}
+                {% for store in stores %}
+                <div class="business-card">
+                    <a href="{{ url_for('tienda', store_id=store.id) }}">
+                        <div class="store-placeholder">
+                            <i class="fas fa-store"></i>
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <h3>{{ store.name }}</h3>
+                        <p>{{ store.description or 'Negocio local verificado' }}</p>
+                        <div class="card-footer">
+                            <span class="location">📍 {{ store.city }}</span>
+                            <a href="{{ url_for('tienda', store_id=store.id) }}" class="btn-view">
+                                Ver Productos <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="loading" style="grid-column: 1/-1;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando negocios...</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="section" style="background: var(--bg-white); border-top: 1px solid var(--border);">
+    <div class="container">
+        <h2 class="section-title">¿Cómo funciona el Registro?</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 2.5rem; text-align: center;">
+            <div style="padding: 2.5rem 2rem; background: var(--bg-main); border-radius: var(--radius); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--primary);">
+                        <i class="fas fa-user-plus" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent);">1. Crea tu Cuenta</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">Regístrate como emprendedor oficial e ingresa los datos esenciales de tu micronegocio local de forma gratuita.</p>
+                </div>
+            </div>
+            <div style="padding: 2.5rem 2rem; background: var(--bg-main); border-radius: var(--radius); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="width: 60px; height: 60px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--secondary);">
+                        <i class="fas fa-boxes" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent);">2. Sube tus Productos</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">Administra tu inventario, actualiza precios y muestra un catálogo digital atractivo y ordenado a tus clientes.</p>
+                </div>
+            </div>
+            <div style="padding: 2.5rem 2rem; background: var(--bg-main); border-radius: var(--radius); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="width: 60px; height: 60px; background: rgba(37, 211, 102, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #25D366;">
+                        <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent);">3. Vende Directamente</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">Recibe notificaciones automáticas y pedidos de compras directo en tu cuenta de WhatsApp vinculada, sin comisiones.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="background: var(--bg-main); border-top: 1px solid var(--border);">
+    <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 4rem; align-items: center;">
+        <div>
+            <h2 style="font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 800; margin-bottom: 1.5rem; color: var(--accent); line-height: 1.3;">Formalización y Visibilidad para la Microempresa</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;"><strong>MiZona</strong> es una infraestructura tecnológica dedicada a la promoción comercial de la Micro y Pequeña Empresa local. Impulsamos la economía independiente conectando el talento de los barrios directamente con el consumidor final.</p>
+            <p style="color: var(--text-muted); margin-bottom: 2.5rem;">Si eres productor, artesano, técnico o comerciante minorista y deseas expandir tus canales de venta digitales, forma parte de nuestro padrón de negocios activos.</p>
+            <a href="{{ url_for('login') }}" class="btn-view" style="padding: 1rem 2rem; font-size: 1rem; border-radius: 8px; text-align: center; display: inline-block; width: auto;">
+                <i class="fas fa-id-card"></i> Inscribir mi Negocio Aquí
+            </a>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 1.5rem;">
+            <div style="background: var(--bg-white); padding: 2rem; border-radius: var(--radius); border: 1px solid var(--border); text-align: center; box-shadow: var(--shadow-sm);">
+                <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem;">100%</div>
+                <div style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Acceso Gratuito</div>
+            </div>
+            <div style="background: var(--bg-white); padding: 2rem; border-radius: var(--radius); border: 1px solid var(--border); text-align: center; box-shadow: var(--shadow-sm);">
+                <div style="font-size: 2.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.5rem;">El Alto</div>
+                <div style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Sede Central</div>
+            </div>
+            <div style="background: var(--bg-white); padding: 2rem; border-radius: var(--radius); border: 1px solid var(--border); grid-column: 1 / -1; box-shadow: var(--shadow-sm);">
+                <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-shield-alt" style="color: var(--primary);"></i> Directorio de Negocios Verificados
+                </h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">Garantizamos la transparencia pública del sistema mediante una validación básica de datos de contacto de cada emprendimiento registrado.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="background: var(--bg-white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); min-height: auto;">
+    <div class="container">
+        <h2 class="section-title">Canales de Atención Ciudadana</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 2.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 12px; color: var(--primary); flex-shrink: 0;">
+                    <i class="fas fa-map-marker-alt" style="font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 0.4rem; color: var(--accent);">Oficina de Enlace</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Av. Central, Dirección de Desarrollo Económico y Tecnológico, El Alto - Bolivia</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 12px; color: var(--secondary); flex-shrink: 0;">
+                    <i class="fas fa-envelope" style="font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 0.4rem; color: var(--accent);">Soporte Técnico</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">consultas@mizona.gob.bo<br>soporte@mizona.com</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="background: rgba(37, 211, 102, 0.1); padding: 1rem; border-radius: 12px; color: #25D366; flex-shrink: 0;">
+                    <i class="fas fa-phone-alt" style="font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                    <h4 style="font-weight: 700; margin-bottom: 0.4rem; color: var(--accent);">Línea Telefónica</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">+591 2 284XXXX<br>Horario: Lun a Vie (08:00 - 16:00)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer style="background: #1e293b; color: #f8fafc; padding: 4rem 0 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 3rem; margin-bottom: 3rem;">
+            <div>
+                <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.2rem; background: linear-gradient(135deg, #ffffff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MiZona</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6;">Plataforma Oficial de Registro y Catálogo Comercial Digital para Micro y Pequeños Emprendimientos Locales.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; color: #ffffff;">Enlaces útiles</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <li><a href="/" style="color: #cbd5e1; text-decoration: none; font-size: 0.95rem; transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#cbd5e1'">Inicio / Negocios</a></li>
+                    <li><a href="{{ url_for('login') }}" style="color: #cbd5e1; text-decoration: none; font-size: 0.95rem; transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#cbd5e1'">Panel de Control</a></li>
+                    <li><a href="#" style="color: #cbd5e1; text-decoration: none; font-size: 0.95rem; transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#cbd5e1'">Términos de Servicio</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; color: #ffffff;">Institución</h4>
+                <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6;">Desarrollado en Coordinación con la Dirección de Desarrollo Económico y Tecnológico.</p>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem; color: #cbd5e1; font-size: 1.2rem;">
+                    <i class="fab fa-facebook" style="cursor: pointer;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#cbd5e1'"></i>
+                    <i class="fab fa-twitter" style="cursor: pointer;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#cbd5e1'"></i>
+                    <i class="fab fa-instagram" style="cursor: pointer;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#cbd5e1'"></i>
+                </div>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; display: flex; flex-direction: column; md-flex-direction: row; justify-content: space-between; align-items: center; gap: 1rem; color: #94a3b8; font-size: 0.9rem; text-align: center;">
+            <p>&copy; 2026 MiZona - Marketplace Local. Todos los derechos reservados.</p>
+            <p style="font-size: 0.85rem; color: #64748b;">Garantizando la transparencia y el desarrollo económico local.</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}
